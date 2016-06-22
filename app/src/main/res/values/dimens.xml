@@ -8,7 +8,6 @@
     <dimen name="size_medium_56">56dp</dimen>
     <dimen name="size_large_72">72dp</dimen>
 
-
     <!--Spaces-->
     <dimen name="spacing_small_8">8dp</dimen>
     <dimen name="spacing_normal_16">16dp</dimen>
@@ -16,4 +15,18 @@
     <dimen name="spacing_medium_32">32dp</dimen>
     <dimen name="spacing_large_56">56dp</dimen>
     <dimen name="spacing_larger_72">72dp</dimen>
+
+    <!--Texts-->
+    <dimen name="text_micro_12">12sp</dimen>
+    <dimen name="text_small_14">14sp</dimen>
+    <dimen name="text_medium_18">18sp</dimen>
+    <dimen name="text_large_22">22sp</dimen>
+
+    <!-- Buttons -->
+    <dimen name="button_height">36dp</dimen>
+    <dimen name="button_dense_height">32dp</dimen>
+    <dimen name="button_min_width">88dp</dimen>
+    <dimen name="button_touchable_target_height">48dp</dimen>
+    <dimen name="button_corner_radius">2dp</dimen>
+    <dimen name="button_text_left_and_right_padding">16dp</dimen>
 </resources>
