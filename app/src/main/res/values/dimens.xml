@@ -26,7 +26,9 @@
     <dimen name="spacing_large_56">56dp</dimen>
     <dimen name="spacing_larger_72">72dp</dimen>
     <dimen name="line_size">1dp</dimen>
-    <dimen name="height_line">72dp</dimen>
+    <dimen name="height_line">56dp</dimen>
+    <dimen name="profile_image_size">256dp</dimen>
+    <dimen name="fab_right_space">8dp</dimen>
 
     <!--Texts-->
     <dimen name="text_micro_12">12sp</dimen>

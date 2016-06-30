@@ -10,6 +10,8 @@
     <string name="text_github">https://github.com/object172/DevIntensive</string>
     <string name="text_vk">vk.com/2432428</string>
     <string name="text_about_me">Введите информацию о себе. Напишите свои интересы, хобби, принципы жизни</string>
+    <string name="profile_menu">Профиль</string>
+    <string name="contact_menu">Контакты</string>
 </resources>
 
 
