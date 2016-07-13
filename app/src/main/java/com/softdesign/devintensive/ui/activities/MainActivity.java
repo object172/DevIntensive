@@ -57,6 +57,20 @@ import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 
+
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+
+import com.softdesign.devintensive.utils.NetworkStatusChecker;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int mCurrentEditMode = 0;
@@ -86,6 +100,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.user_photo_img)
     ImageView mProfileImage;
 
+
+    TextView mUserProfileText;
+    TextView mUserEmailText;
+
+
     @BindView(R.id.call_phone)
     ImageView mCallPhone;
     @BindView(R.id.send_mail)
@@ -106,6 +125,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindViews({R.id.edit_phone, R.id.edit_mail, R.id.edit_vk, R.id.edit_github, R.id.edit_bio})
     List<EditText> userFieldViews;
 
+    @BindViews({R.id.user_rating, R.id.user_code_lines, R.id.user_projects})
+    List<TextView> mUserValueViews;
+
     private AppBarLayout.LayoutParams mAppBarParams = null;
 
     private Integer[] mArrayErrors = {R.string.error_format_phone, R.string.error_format_email, R.string.error_format_path_vk,
@@ -122,6 +144,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDataManager = DataManager.getInstanse();
         View v = mNavigationView.getHeaderView(0);
         avatarView = (ImageView) v.findViewById(R.id.avatar);
+
+        mUserProfileText = (TextView) v.findViewById(R.id.user_profile_text);
+        mUserEmailText = (TextView) v.findViewById(R.id.user_email_text);
 
         mFab.setOnClickListener(this);
 
@@ -143,13 +168,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setupToolbar();
         setupDrawer();
-        createRoundedAvatar();
-        loadUserInfoValue();
+        initData();
+        //createRoundedAvatar();
+        //loadUserInfoValue();
 
-        Picasso.with(this)
-                .load(mDataManager.getPreferencesManager().loadUserPhoto())
-                .placeholder(R.drawable.userphoto)
-                .into(mProfileImage);
+        //Picasso.with(this)
+        //        .load(mDataManager.getPreferencesManager().loadUserPhoto())
+        //        .placeholder(R.drawable.userphoto)
+        //        .into(mProfileImage);
 
 
         if (savedInstanceState != null) {
@@ -157,6 +183,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             changeEditMode(mCurrentEditMode);
         }
     }
+
+    private void uploadPhoto(Uri uri) {
+        if (NetworkStatusChecker.isNetworkAvailable(this)) {
+            File file = new File(uri.getPath());
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
+            String descriptionString = "load photo";
+            RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+            Call<ResponseBody> call = mDataManager.savePhoto(description, body);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    Log.v("Upload", "success");
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.e("Upload error:", t.getMessage());
+                }
+            });
+            } else {
+                showSnackbar("Соединение с сетью отсутствует");
+            }
+        }
+
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -187,7 +239,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        saveUserInfoValue();
+        //saveUserInfoValue();
+        saveUserField();
         Log.d(TAG, "onPause");
     }
 
@@ -400,13 +453,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             onBackPressed();
     }
 
+
+    private void initUserInfoValue() {
+        List<String> userData = mDataManager.getPreferencesManager().loadUserProfileValue();
+        for (int i = 0; i < userData.size(); i++) {
+            mUserValueViews.get(i).setText(userData.get(i));
+        }
+    }
+
+    private void initContentValue() {
+        List<String> contentData = mDataManager.getPreferencesManager().loadContentValue();
+        for (int i = 0; i < contentData.size(); i++) {
+            userFieldViews.get(i).setText(contentData.get(i));
+        }
+    }
+
+    private void initNavValue() {
+        List<String> navData = mDataManager.getPreferencesManager().loadNavValue();
+        try {
+            mUserProfileText.setText(navData.get(0) + " " + navData.get(1));
+        } catch (Exception e) {
+            Log.d("M", e.getMessage());
+        }
+        mUserEmailText.setText(mDataManager.getPreferencesManager().getEmail());
+        Uri uri = Uri.parse(navData.get(2));
+        Picasso.with(this).load(uri).into(avatarView);
+    }
+
+    private void initPhoto() {
+        insertProfileImage(mDataManager.getPreferencesManager().loadUserPhoto());
+    }
+
+
+    private void initData() {
+        initUserField();
+        initUserInfoValue();
+        initContentValue();
+        initNavValue();
+        initPhoto();
+    }
+
     /**
      * Функция скругляет аватар
      */
-    private void createRoundedAvatar() {
+    private void createRoundedAvatar(File image) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = false;
-        Bitmap avatar = BitmapFactory.decodeResource(getResources(), R.drawable.avatar, options);
+        Bitmap avatar = BitmapFactory.decodeFile(image.getPath());
         RoundedAvatarDrawable roundedAvatarDrawable = new RoundedAvatarDrawable(avatar);
         avatarView.setImageDrawable(roundedAvatarDrawable);
     }
@@ -415,10 +508,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.apply(userFieldViews, CHANGE_EDIT_ALL);
         if (mode == 0) {
             mFab.setImageResource(R.drawable.ic_mode_edit_black_24dp);
+            boolean isSave = true;
+            for (int i = 0; i < userInputFieldViews.size(); i++) {
+                if (userInputFieldViews.get(i).isErrorEnabled()) {
+                    isSave = false;
+                    initUserField();
+                    showSnackbar("Ощибка сохранения данных!");
+                    break;
+                }
+            }
+
+
+
+            if (isSave) saveUserField();
             hideProfilePlaceholder();
             unlockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.white));
-            saveUserInfoValue();
+            //saveUserInfoValue();
+            ButterKnife.apply(userInputFieldViews, CHANGE_ERROR_ALL);
         } else {
             mFab.setImageResource(R.drawable.ic_done_black_24dp);
             showProfilePlaceholder();
@@ -430,15 +537,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+
+
     /* Загрузка данных пользователя */
-    private void loadUserInfoValue() {
+    private void initUserField() {
         List<String> userFields = mDataManager.getPreferencesManager().loadUserProfileData();
         for (int i = 0; i < userFields.size(); i++) {
             if (!userFields.get(i).equals("null")) userFieldViews.get(i).setText(userFields.get(i));
         }
     }
 
-    private void saveUserInfoValue() {
+    private void saveUserField() {
         List<String> userFields = new ArrayList<>();
         for (EditText userEditText : userFieldViews) {
             userFields.add(userEditText.getText().toString());

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_bg"
+    android:paddingLeft="@dimen/size_medium_56"
+    android:paddingRight="@dimen/size_medium_56"
+    tools:context="com.softdesign.devintensive.ui.activities.LoginActivity">
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="@dimen/size_small_24"
+                android:layout_marginTop="@dimen/left_medium_margin_32"
+                android:background="@color/color_accent"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/left_medial_margin_24"
+                android:paddingLeft="@dimen/left_medial_margin_24"
+                android:paddingRight="@dimen/right_medial_margin_24"
+                android:paddingTop="@dimen/left_medial_margin_24">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/login"
+                    android:textColor="@color/color_accent"
+                    android:textSize="20dp"/>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/login"
+                        style="@style/edit_auth"
+                        android:hint="@string/hint_email"
+                        android:inputType="textEmailAddress"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content">
+
+                     <EditText
+                      android:id="@+id/password"
+                      style="@style/edit_auth"
+                      android:hint="@string/hint_password"
+                      android:inputType="textPassword"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                     android:id="@+id/sign_in"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center_horizontal"
+                     android:layout_marginTop="@dimen/activity_horizontal_margin"
+                     android:minWidth="@dimen/btn_login"
+                     android:text="@string/login"
+                     android:textAllCaps="true"
+                     android:textColor="@color/white"
+                     style="@style/AppTheme.Button.Red"
+                     android:theme="@style/AppTheme.Button.Red"/>
+
+                     <TextView
+                        android:id="@+id/remember_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/left_small_margin_16"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/forget_password"
+                        android:textColor="@color/gray_light"/>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</android.support.design.widget.CoordinatorLayout>
+
+

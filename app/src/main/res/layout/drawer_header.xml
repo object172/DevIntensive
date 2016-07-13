@@ -23,7 +23,7 @@
         android:layout_alignParentBottom="true">
 
         <TextView
-            android:id="@+id/user_name_txt"
+            android:id="@+id/user_profile_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Спирин Вячеслав"
@@ -32,7 +32,7 @@
             android:fontFamily="sans-serif-medium"/>
 
         <TextView
-            android:id="@+id/user_email_txt"
+            android:id="@+id/user_email_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="object172@yandex.ru"
